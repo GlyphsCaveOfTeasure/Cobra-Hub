@@ -1,0 +1,147 @@
+-- i dont know what u wanted added and where you wanted it so here is the basic setup, hope u like it :P
+
+local HttpService = game:GetService("HttpService")
+local Players = game:GetService("Players")
+local LocalPlayer = Players.LocalPlayer
+
+local WindUI = loadstring(game:HttpGet("https://github.com/Footagesus/WindUI/releases/latest/download/main.lua"))()
+
+local function gradient(text, startColor, endColor)
+    local result = ""
+    local length = #text
+    for i = 1, length do
+        local t = (i - 1) / math.max(length - 1, 1)
+        local r = math.floor((startColor.R + (endColor.R - startColor.R) * t) * 255)
+        local g = math.floor((startColor.G + (endColor.G - startColor.G) * t) * 255)
+        local b = math.floor((startColor.B + (endColor.B - startColor.B) * t) * 255)
+        local char = text:sub(i, i)
+        result = result .. "<font color=\"rgb(" .. r ..", " .. g .. ", " .. b .. ")\">" .. char .. "</font>"
+    end
+    return result
+end
+
+local confirmed = false
+local titleGradient = gradient("Cobra Hub", Color3.fromRGB(0,255,135), Color3.fromRGB(96,239,255))
+
+WindUI:Popup({
+    Title = "Welcome To " .. titleGradient,
+    Icon = "rbxassetid://129260712070622",
+    IconThemed = true,
+    Content = "",
+    Buttons = {
+        {
+            Title = "Continue",
+            Variant = "Primary",
+            Callback = function() confirmed = true end
+        }
+    }
+})
+
+repeat wait() until confirmed
+
+local Window = WindUI:CreateWindow({
+    Title = titleGradient,
+    Icon = "rbxassetid://129260712070622",
+    IconThemed = true,
+    Author = "Cobra",
+    Folder = "CobraHub",
+    Size = UDim2.fromOffset(580, 460),
+    Transparent = true,
+    Theme = "Dark",
+    ScrollBarEnabled = true,
+    SideBarWidth = 200,
+    User = {
+        Enabled = true,
+        Anonymous = false,
+    }
+})
+
+local Tabs = {}
+Tabs.Home = Window:Tab({ Title = "Home", Icon = "layout-dashboard" })
+Tabs.Steal = Window:Tab({ Title = "Steal", Icon = "file-search" })
+Tabs.Misc = Window:Tab({ Title = "Misc", Icon = "settings-2" })
+Tabs.Settings = Window:Tab({ Title = "Settings", Icon = "cog" })
+
+Tabs.Home:Button({
+    Title = "Simple Button",
+    Callback = function()
+        print("Button clicked")
+    end
+})
+
+Tabs.Home:Slider({
+    Title = "Slider",
+    Desc = "Drag me",
+    Value = {
+        Min = 0,
+        Max = 100,
+        Default = 50,
+    },
+    Callback = function(v)
+        print("Slider value:", v)
+    end
+})
+
+Tabs.Home:Input({
+    Title = "Textbox",
+    Desc = "Type something",
+    Value = "",
+    Placeholder = "Enter text...",
+    Callback = function(v)
+        print("Textbox input:", v)
+    end
+})
+
+Tabs.Home:Dropdown({
+    Title = "Choose One",
+    Values = { "Option 1", "Option 2", "Option 3" },
+    Value = "Option 1",
+    Callback = function(v)
+        print("Dropdown selected:", v)
+    end
+})
+
+Tabs.Home:Dropdown({
+    Title = "Choose Multiple",
+    Values = { "Category A", "Category B", "Category C" },
+    Value = { "Category A" },
+    Multi = true,
+    AllowNone = true,
+    Callback = function(v)
+        print("Multi Dropdown selected:", HttpService:JSONEncode(v))
+    end
+})
+
+local KeybindElement = Tabs.Home:Keybind({
+    Title = "Toggle UI",
+    Desc = "Keybind to open/close UI",
+    Value = "F",
+    Callback = function(v)
+        Window:SetToggleKey(Enum.KeyCode[v])
+    end
+})
+
+Tabs.Home:Button({
+    Title = "Notify Me",
+    Callback = function()
+        WindUI:Notify({
+            Title = "Notification",
+            Content = "This is a notification example",
+            Duration = 5,
+        })
+    end
+})
+
+local themes = WindUI:GetThemes()
+local themeList = {}
+for name in pairs(themes) do table.insert(themeList, name) end
+table.sort(themeList)
+
+Tabs.Settings:Dropdown({
+    Title = "Select Theme",
+    Values = themeList,
+    Value = WindUI:GetCurrentTheme(),
+    Callback = function(theme)
+        WindUI:SetTheme(theme)
+    end
+})
