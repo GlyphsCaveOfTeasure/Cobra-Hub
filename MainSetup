@@ -57,7 +57,7 @@ local Window = WindUI:CreateWindow({
 })
 
 local Tabs = {}
-Tabs.Home = Window:Tab({ Title = "Home", Icon = "layout-dashboard" })
+Tabs.Home = Window:Tab({ Title = "Home", Icon = "house" })
 Tabs.Steal = Window:Tab({ Title = "Steal", Icon = "file-search" })
 Tabs.Misc = Window:Tab({ Title = "Misc", Icon = "settings-2" })
 Tabs.Settings = Window:Tab({ Title = "Settings", Icon = "cog" })
